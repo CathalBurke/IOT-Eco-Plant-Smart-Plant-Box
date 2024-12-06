@@ -249,7 +249,29 @@
             document.getElementById('fanStatus').textContent = "Fan Status: OFF";
             fetch('/stop-fan')
                 .catch(error => console.error('Error:', error));
+     
         }
+    
+        function fetchSensorData() {
+        fetch('/data')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('tempValue').textContent = data.temperature + " °C";
+            document.getElementById('humidityValue').textContent = data.humidity + " %";
+            document.getElementById('soilValue').textContent = data.soil_moisture + " %";
+            document.getElementById('waterLevelValue').textContent = data.water_level + " %";
+        })
+            .catch(error => console.error('Error fetching sensor data:', error));
+         }
+
+        // Call fetchSensorData every second
+        setInterval(fetchSensorData, 1000);
+
+    
+    
+    
+    
+    
     </script>
 </body>
 </html>
