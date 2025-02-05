@@ -27,22 +27,22 @@ WebServer server(80);
 
 // Function to read temperature
 float Get_Temp() {
-  float temp = dht.readTemperature();
-  if (isnan(temp)) {
-      Serial.println("Failed to read temperature from DHT sensor!");
-      return 0.0;
-  }
-  return temp;
+    float temp = dht.readTemperature();
+    if (isnan(temp)) {
+        Serial.println("Failed to read temperature from DHT sensor!");
+        return 0.0;
+    }
+    return temp;
 }
 
 // Function to read humidity
 float Get_Humid() {
-  float humid = dht.readHumidity();
-  if (isnan(humid)) {
-      Serial.println("Failed to read humidity from DHT sensor!");
-      return 0.0;
-  }
-  return humid;
+    float humid = dht.readHumidity();
+    if (isnan(humid)) {
+        Serial.println("Failed to read humidity from DHT sensor!");
+        return 0.0;
+    }
+    return humid;
 }
 
 // Function to read soil moisture level
@@ -56,9 +56,9 @@ float Get_Moisture() {
 
 // Function to read water level
 float Get_Water_level() {
-  int waterLevelValue = analogRead(WATER_LEVEL_PIN);
+    int waterLevelValue = analogRead(WATER_LEVEL_PIN);
   
-  return waterLevelValue;
+    return waterLevelValue;
 }
 
 // Function to start the pump
@@ -77,72 +77,73 @@ void stopPump() {
 
 // Function to start the fan
 void startFan() {
-  digitalWrite(FAN_PIN, HIGH);
-  Serial.println("Fan started");
-  server.send(200, "text/plain", "Fan ON");
+    digitalWrite(FAN_PIN, HIGH);
+    Serial.println("Fan started");
+    server.send(200, "text/plain", "Fan ON");
 }
 
+// Function to stop the fan
 void stopFan() {
-  digitalWrite(FAN_PIN, LOW);
-  Serial.println("Fan stopped");
-  server.send(200, "text/plain", "Fan OFF");
+    digitalWrite(FAN_PIN, LOW);
+    Serial.println("Fan stopped");
+    server.send(200, "text/plain", "Fan OFF");
 }
 
 // Function to send sensor data as JSON
 void handleData() {
-  StaticJsonDocument<256> doc;
-  doc["temperature"] = Get_Temp();
-  doc["humidity"] = Get_Humid();
-  doc["soil_moisture"] = Get_Moisture();
-  doc["water_level"] = Get_Water_level();
+    StaticJsonDocument<256> doc;
+    doc["temperature"] = Get_Temp();
+    doc["humidity"] = Get_Humid();
+    doc["soil_moisture"] = Get_Moisture();
+    doc["water_level"] = Get_Water_level();
 
-  String response;
-  serializeJson(doc, response);
-  server.send(200, "application/json", response);
+    String response;
+    serializeJson(doc, response);
+    server.send(200, "application/json", response);
 }
 
 void setup() {
-  Serial.begin(115200);
-  
-  // Initialize Wi-Fi
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  Serial.println("Connecting to Wi-Fi...");
-  while (WiFi.status() != WL_CONNECTED) {
-      delay(500);
-      Serial.print(".");
-  }
-  Serial.println("\nConnected to Wi-Fi");
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
+    Serial.begin(115200);
 
-  dht.begin();
-  pinMode(PUMP_PIN, OUTPUT);
+  // Initialize Wi-Fi
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, password);
+    Serial.println("Connecting to Wi-Fi...");
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println("\nConnected to Wi-Fi");
+    Serial.print("IP Address: ");
+    Serial.println(WiFi.localIP());
+
+    dht.begin();
+    pinMode(PUMP_PIN, OUTPUT);
     digitalWrite(PUMP_PIN, LOW);
-  pinMode(FAN_PIN, OUTPUT);
+    pinMode(FAN_PIN, OUTPUT);
   digitalWrite(FAN_PIN, LOW); 
   // Ensure the fan is off initially
   //pinMode(LED_PIN, OUTPUT);
   //digitalWrite(LED_PIN, HIGH); // Assume system is online by default
-  
-  if (MDNS.begin("esp32")) {
-      Serial.println("MDNS responder started");
-  }
 
-  server.on("/data", handleData);
-  server.on("/start-pump", startPump);
-  server.on("/stop-pump", stopPump);
-  server.on("/start-fan", startFan);
-  server.on("/stop-fan", stopFan);
-  server.on("/led-status", HTTP_GET, handleLedStatus);
-  server.onNotFound(handleNotFound);
+    if (MDNS.begin("esp32")) {
+        Serial.println("MDNS responder started");
+    }
+
+    server.on("/data", handleData);
+    server.on("/start-pump", startPump);
+    server.on("/stop-pump", stopPump);
+    server.on("/start-fan", startFan);
+    server.on("/stop-fan", stopFan);
+    server.on("/led-status", HTTP_GET, handleLedStatus);
+    server.onNotFound(handleNotFound);
 
   // Start server
-  server.begin();
-  Serial.println("HTTP server started");
+    server.begin();
+    Serial.println("HTTP server started");
 }
 
 void loop() {
-  server.handleClient();
+    server.handleClient();
     delay(2);
 }
