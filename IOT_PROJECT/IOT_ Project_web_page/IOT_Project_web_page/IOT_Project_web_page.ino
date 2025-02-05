@@ -74,6 +74,8 @@ void stopPump() {
   Serial.println("Pump stopped");
   server.send(200, "text/plain", "Pump OFF");
 }
+
+// Function to start the fan
 void startFan() {
   digitalWrite(FAN_PIN, HIGH);
   Serial.println("Fan started");
@@ -99,28 +101,7 @@ void handleData() {
   server.send(200, "application/json", response);
 }
 
-// Function to handle root endpoint
-void handleRoot() {
-  String message = homePagePart1; // Assumes homePagePart1 contains the HTML content
-  server.send(200, "text/html", message);
-}
-
-// Function to handle unknown endpoints
-void handleNotFound() {
-  String message = "File Not Found\n\n";
-  message += "URI: ";
-  message += server.uri();
-  message += "\nMethod: " + String(server.method() == HTTP_GET ? "GET" : "POST");  // Fix here
-  message += "\nArguments: ";
-  message += server.args();
-  message += "\n";
-  for (uint8_t i = 0; i < server.args(); i++) {
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  }
-  server.send(404, "text/plain", message);
-}
-
-void setup(void) {
+void setup() {
   Serial.begin(115200);
   
   // Initialize Wi-Fi
@@ -136,16 +117,14 @@ void setup(void) {
   Serial.println(WiFi.localIP());
 
   dht.begin();
-  float moistureValue=0;
   pinMode(PUMP_PIN, OUTPUT);
-  digitalWrite(PUMP_PIN, LOW); // Initialize pump as OFF
+    digitalWrite(PUMP_PIN, LOW);
   pinMode(FAN_PIN, OUTPUT);
-  digitalWrite(FAN_PIN, LOW); // Ensure the fan is off initially
+  digitalWrite(FAN_PIN, LOW); 
+  // Ensure the fan is off initially
   //pinMode(LED_PIN, OUTPUT);
   //digitalWrite(LED_PIN, HIGH); // Assume system is online by default
   
-
-  // Initialize MDNS
   if (MDNS.begin("esp32")) {
       Serial.println("MDNS responder started");
   }
@@ -163,10 +142,7 @@ void setup(void) {
   Serial.println("HTTP server started");
 }
 
-void loop(void) {
+void loop() {
   server.handleClient();
-  delay(2); // Allow CPU to switch to other tasks
+    delay(2);
 }
-
-
-
