@@ -86,18 +86,6 @@ void stopFan() {
   server.send(200, "text/plain", "Fan OFF");
 }
 
-
-// Function to handle LED status endpoint
-void handleLedStatus() {
-  bool ledState = digitalRead(LED_PIN);
-  StaticJsonDocument<200> doc;
-  doc["led"] = ledState ? "on" : "off"; // "on" if HIGH, "off" if LOW
-
-  String response;
-  serializeJson(doc, response);
-  server.send(200, "application/json", response);
-}
-
 // Function to send sensor data as JSON
 void handleData() {
   StaticJsonDocument<256> doc;
@@ -147,7 +135,6 @@ void setup(void) {
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
 
-  // Initialize sensors and pump
   dht.begin();
   float moistureValue=0;
   pinMode(PUMP_PIN, OUTPUT);
@@ -163,9 +150,6 @@ void setup(void) {
       Serial.println("MDNS responder started");
   }
 
-  // Setup server routes
-  server.on("/", handleRoot);
-  server.on("/inline", []() { server.send(200, "text/plain", "this works as well"); });
   server.on("/data", handleData);
   server.on("/start-pump", startPump);
   server.on("/stop-pump", stopPump);
