@@ -121,7 +121,7 @@ void setup() {
     pinMode(PUMP_PIN, OUTPUT);
     digitalWrite(PUMP_PIN, LOW);
     pinMode(FAN_PIN, OUTPUT);
-  digitalWrite(FAN_PIN, LOW); 
+    digitalWrite(FAN_PIN, LOW); 
   // Ensure the fan is off initially
   //pinMode(LED_PIN, OUTPUT);
   //digitalWrite(LED_PIN, HIGH); // Assume system is online by default
