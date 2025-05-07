@@ -152,7 +152,7 @@ const char* homePagePart1 = R"=====(<!DOCTYPE html>
             background-color: #2e7d32;
         }
 
-        .pump-status, .fan-status {
+        .pump-status {
             font-weight: bold;
             font-size: 1.1em;
             margin-top: 10px;
@@ -206,13 +206,9 @@ const char* homePagePart1 = R"=====(<!DOCTYPE html>
                 <td>Force Water</td>
                 <td><button onmousedown="startPump()" onmouseup="stopPump()">Activate to pump</button></td>
             </tr>
-            <tr>
-                <td>Force Fan</td>
-                <td><button onmousedown="startFan()" onmouseup="stopFan()">Activate to run fan</button></td>
-            </tr>
         </table>
         <div class="pump-status" id="pumpStatus">Pump Status: OFF</div>
-        <div class="fan-status" id="fanStatus">Fan Status: OFF</div>
+       
     </div>
 
     <script>
@@ -243,19 +239,7 @@ const char* homePagePart1 = R"=====(<!DOCTYPE html>
                 .catch(error => console.error('Error:', error));
         }
 
-        // Function to manage Fan Status
-        function startFan() {
-            document.getElementById('fanStatus').textContent = "Fan Running";
-            fetch('/start-fan')
-                .catch(error => console.error('Error:', error));
-        }
-
-        function stopFan() {
-            document.getElementById('fanStatus').textContent = "Fan Status: OFF";
-            fetch('/stop-fan')
-                .catch(error => console.error('Error:', error));
-     
-        }
+        
     
         function fetchSensorData() {
         fetch('/data')
